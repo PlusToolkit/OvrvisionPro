@@ -49,8 +49,8 @@ namespace aruco {
   BoardConfiguration BC;
   BC.readFromFile(path_bc);
   BoardDetector BD;
-  BD.setParams(BC,CP); //or only BD.setParams(BC)
-  //capture image
+  BD.setParams(BC,CP); // or only BD.setParams(BC)
+  // capture image
   cv::Mat im;
   capture_image(im);
 
@@ -91,7 +91,6 @@ class ARUCO_EXPORTS BoardDetector {
 
 
     // ALTERNATIVE DETECTION METHOD, BASED ON MARKERS PREVIOUSLY DETECTED
-
     /** Given the markers detected, determines if there is the board passed
     * @param detectedMarkers result provided by aruco::ArMarkerDetector
     * @param BConf the board you want to see if is present

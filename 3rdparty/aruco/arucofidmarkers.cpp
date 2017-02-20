@@ -337,7 +337,6 @@ int FiducidalMarkers::analyzeMarkerImage(Mat &grey, int &nRotations) {
 
     // Markers  are divided in 7x7 regions, of which the inner 5x5 belongs to marker info
     // the external border shoould be entirely black
-
     int swidth = grey.rows / 7;
     for (int y = 0; y < 7; y++) {
         int inc = 6;
@@ -359,7 +358,6 @@ int FiducidalMarkers::analyzeMarkerImage(Mat &grey, int &nRotations) {
     vector< int > markerInfo(5);
     Mat _bits = Mat::zeros(5, 5, CV_8UC1);
     // get information(for each inner square, determine if it is  black or white)
-
     for (int y = 0; y < 5; y++) {
 
         for (int x = 0; x < 5; x++) {
@@ -372,7 +370,6 @@ int FiducidalMarkers::analyzeMarkerImage(Mat &grey, int &nRotations) {
         }
     }
     // 		printMat<uchar>( _bits,"or mat");
-
     // checkl all possible rotations
     Mat _bitsFlip;
     Mat Rotations[4];
@@ -392,7 +389,6 @@ int FiducidalMarkers::analyzeMarkerImage(Mat &grey, int &nRotations) {
     }
     // 		        printMat<uchar>( Rotations [ minDist.second]);
     // 		 	cout<<"MinDist="<<minDist.first<<" "<<minDist.second<<endl;
-
     nRotations = minDist.second;
     if (minDist.first != 0) // FUTURE WORK: correct if any error
         return -1;
@@ -461,7 +457,6 @@ int FiducidalMarkers::detect(const Mat &in, int &nRotations) {
 
     // now, analyze the interior in order to get the id
     // try first with the big ones
-
     return analyzeMarkerImage(grey, nRotations);
     ;
     // too many false positives

@@ -145,7 +145,6 @@ class ARUCO_EXPORTS MarkerCode {
     unsigned int _ids[4];         // ids in the four rotations
     std::vector< bool > _bits[4]; // bit strings in the four rotations
     unsigned int _n;              // marker dimension
-
     /**
      * Return hamming distance between two bit vectors
      */
@@ -263,8 +262,6 @@ class ARUCO_EXPORTS HighlyReliableMarkers {
     static unsigned int _ncellsBorder;
     static unsigned int _correctionDistance;
     static int _swidth; // cell size in the canonical image
-
-
     /**
      * Check marker borders cell in the canonical image are black
      */

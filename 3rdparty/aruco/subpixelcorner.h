@@ -2,7 +2,6 @@
 #define aruco_SUBPIXELCORNER_HPP
 
 #include <opencv2/core/core.hpp> // Basic OpenCV structures (cv::Mat)
-
 namespace aruco {
 
 class SubPixelCorner {

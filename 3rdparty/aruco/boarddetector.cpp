@@ -135,7 +135,6 @@ float BoardDetector::detect(const vector< Marker > &detectedMarkers, const Board
             marker_meter_per_pix = markerSizeMeters / cv::norm(BConf[0][0] - BConf[0][1]);
         else
             marker_meter_per_pix = 1; // to avoind interferring the process below
-
         // now, create the matrices for finding the extrinsics
         vector< cv::Point3f > objPoints;
         vector< cv::Point2f > imagePoints;
@@ -161,7 +160,6 @@ float BoardDetector::detect(const vector< Marker > &detectedMarkers, const Board
         rvec.convertTo(Bdetected.Rvec, CV_32FC1);
         tvec.convertTo(Bdetected.Tvec, CV_32FC1);
         //             cout<<rvec<< " "<<tvec<<" _setYPerpendicular="<<_setYPerpendicular<<endl;
-
         {
             vector< cv::Point2f > reprojected;
             cv::projectPoints(objPoints, rvec, tvec, camMatrix, distCoeff, reprojected);

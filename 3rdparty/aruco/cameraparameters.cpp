@@ -78,7 +78,6 @@ void CameraParameters::setParams(cv::Mat cameraMatrix, cv::Mat distorsionCoeff, 
     //     Distorsion.create(1,4,CV_32FC1);
     //     for (int i=0;i<4;i++)
     //         Distorsion.ptr<float>(0)[i]=auxD.ptr<float>(0)[i];
-
     CamSize = size;
 }
 
@@ -222,7 +221,6 @@ void CameraParameters::readFromXMLFile(string filePath) throw(cv::Exception) {
     //     Distorsion.create(1,4,CV_32FC1);
     //     for (int i=0;i<4;i++)
     //         Distorsion.ptr<float>(0)[i]=mdist32.ptr<float>(0)[i];
-
     Distorsion.create(1, 5, CV_32FC1);
     for (int i = 0; i < 5; i++)
         Distorsion.ptr< float >(0)[i] = mdist32.ptr< float >(0)[i];

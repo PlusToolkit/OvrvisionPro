@@ -310,7 +310,6 @@ int HighlyReliableMarkers::detect(const cv::Mat &in, int &nRotations) {
 
     // check borders, even not necesary for the highly reliable markers
     // if(!checkBorders(grey)) return -1;
-
     // obtain inner code
     MarkerCode candidate = getMarkerCode(grey);
 
@@ -329,12 +328,11 @@ int HighlyReliableMarkers::detect(const cv::Mat &in, int &nRotations) {
     //           for(uint j=0; j<4; j++) {
     //        if(_D[i].getId() == candidate.getId(j)) {
     //          nRotations = j;
-    //          //return candidate.getId(j);
+    //          // return candidate.getId(j);
     //          return i;
     //        }
     //           }
     //         }
-
     // correct errors
     unsigned int minMarker, minRot;
     if (_D.distance(candidate, minMarker, minRot) <= _correctionDistance) {
@@ -401,7 +399,6 @@ void HighlyReliableMarkers::BalancedBinaryTree::loadDictionary(Dictionary *D) {
     while (pow(float(2), float(levels)) <= _orderD.size())
         levels++;
     //       levels-=1; // only count full levels
-
     // auxiliar vector to know which elements are already in the tree
     std::vector< bool > visited;
     visited.resize(_orderD.size(), false);
@@ -412,7 +409,6 @@ void HighlyReliableMarkers::BalancedBinaryTree::loadDictionary(Dictionary *D) {
     _root = rootIdx;
 
     //    for(int i=0; i<visited.size(); i++) std::cout << visited[i] << std::endl;
-
     // auxiliar vector to store the ids intervals (max and min) during the creation of the tree
     std::vector< std::pair< unsigned int, unsigned int > > intervals;
     // first, add the two intervals at each side of root element
@@ -462,7 +458,6 @@ void HighlyReliableMarkers::BalancedBinaryTree::loadDictionary(Dictionary *D) {
                 _binaryTree[center].first = lowerChild;                                                           // add as a child in the tree
             } else
                 _binaryTree[center].first = -1; // if not, mark as no child
-
             // (higher child, same as lower child)
             if (!visited[higherChild]) {
                 intervals.insert(intervals.begin(), std::pair< unsigned int, unsigned int >(center, higherBound));

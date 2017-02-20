@@ -82,7 +82,6 @@ void SubPixelCorner::RefineCorner(cv::Mat image, std::vector< cv::Point2f > &cor
         cv::Point2f estimate_corner = corners[k];
 
         // cerr << 'SSS" << corners[k].x <<":" << corners[k].y << endl;
-
         if (estimate_corner.x < 0 || estimate_corner.y < 0 || estimate_corner.y > image.rows || estimate_corner.y > image.cols)
             continue;
         int iter = 0;

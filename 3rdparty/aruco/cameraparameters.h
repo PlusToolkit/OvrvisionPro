@@ -124,7 +124,6 @@ class ARUCO_EXPORTS CameraParameters {
 
   private:
     // GL routines
-
     static void argConvGLcpara2(double cparam[3][4], int width, int height, double gnear, double gfar, double m[16], bool invert) throw(cv::Exception);
     static int arParamDecompMat(double source[3][4], double cpara[3][4], double trans[3][4]) throw(cv::Exception);
     static double norm(double a, double b, double c);

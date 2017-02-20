@@ -29,8 +29,6 @@ or implied, of Rafael Muñoz Salinas.
 #include "chromaticmask.h"
 #include <set>
 // #include <omp.h>
-
-
 /**
  */
 EMClassifier::EMClassifier(unsigned int nelements) {
@@ -55,7 +53,6 @@ EMClassifier::EMClassifier(unsigned int nelements) {
 void EMClassifier::train() {
 
     // fill histogram
-
     for (unsigned int i = 0; i < 256; i++)
         _histogram[i] = 0;
 
@@ -250,7 +247,7 @@ void ChromaticMask::calculateGridImage(const aruco::Board &board) {
 
     cv::Rect cellRect(0, 0, _mc, _nc);
     for (unsigned int i = 0; i < transformedPixels.size(); i++) {
-        //_canonicalPos.at<cv::Vec2b>(_pixelsVector[i].y, _pixelsVector[i].x) = cv::Vec2b(transformedPixels[i].x, transformedPixels[i].y);
+        // _canonicalPos.at<cv::Vec2b>(_pixelsVector[i].y, _pixelsVector[i].x) = cv::Vec2b(transformedPixels[i].x, transformedPixels[i].y);
         transformedPixels[i].x /= _cellSize;
         transformedPixels[i].y /= _cellSize;
         if (!transformedPixels[i].inside(cellRect)) {
@@ -313,7 +310,6 @@ void ChromaticMask::train(const cv::Mat &in, const aruco::Board &board) {
     //
     //     }
     //   }
-
     _isValid = true;
 }
 
@@ -343,7 +339,6 @@ void ChromaticMask::classify(const cv::Mat &in, const aruco::Board &board) {
                 // 	}
                 // 	prob /= totalW;
                 // 	if(prob > _threshProb) _mask.at<uchar>(i,j)=1;
-
                 // not considering neighbours
                 if (_classifiers[idx - 1].classify(in.at< uchar >(i, j)))
                     _mask.at< uchar >(i, j) = 1;
@@ -394,9 +389,7 @@ void ChromaticMask::classify2(const cv::Mat &in, const aruco::Board &board) {
 
     cv::Mat pT_32;
     _perpTrans.convertTo(pT_32, CV_32F); // RMS: CAMBIA A FLOAT
-
     //       cout << _perpTrans << endl;
-
     cv::Rect r = cv::boundingRect(_imgCornerPoints);
     r = fitRectToSize(r, in.size()); // fit rectangle to image limits
     float *H = pT_32.ptr< float >(0);

@@ -134,8 +134,7 @@ void MarkerDetector::detect(const cv::Mat &input, vector< Marker > &detectedMark
     else
         grey = input;
     double t1 = cv::getTickCount();
-    //     cv::cvtColor(grey,_ssImC ,CV_GRAY2BGR); //DELETE
-
+    //     cv::cvtColor(grey,_ssImC ,CV_GRAY2BGR); // DELETE
     // clear input data
     detectedMarkers.clear();
 
@@ -293,7 +292,6 @@ void MarkerDetector::detectRectangles(vector< cv::Mat > &thresImgv, vector< Mark
 
 //         cv::Mat input;
 //         cv::cvtColor ( thresImgv[0],input,CV_GRAY2BGR );
-
 #pragma omp parallel for
     for (size_t i = 0; i < thresImgv.size(); i++) {
         std::vector< cv::Vec4i > hierarchy2;
@@ -322,7 +320,7 @@ void MarkerDetector::detectRectangles(vector< cv::Mat > &thresImgv, vector< Mark
                     // and is convex
                     if (isContourConvex(Mat(approxCurve))) {
                         // 					      drawApproxCurve(input,approxCurve,Scalar(255,0,255));
-                        // 						//ensure that the   distace between consecutive points is large enough
+                        // 						// ensure that the   distace between consecutive points is large enough
                         float minDist = 1e10;
                         for (int j = 0; j < 4; j++) {
                             float d = std::sqrt((float)(approxCurve[j].x - approxCurve[(j + 1) % 4].x) * (approxCurve[j].x - approxCurve[(j + 1) % 4].x) +
@@ -372,13 +370,12 @@ void MarkerDetector::detectRectangles(vector< cv::Mat > &thresImgv, vector< Mark
             swap(MarkerCanditates[i][1], MarkerCanditates[i][3]);
             swapped[i] = true;
             // sort the contour points
-            //  	    reverse(MarkerCanditates[i].contour.begin(),MarkerCanditates[i].contour.end());//????
+            //  	    reverse(MarkerCanditates[i].contour.begin(),MarkerCanditates[i].contour.end());// ????
         }
     }
 
     /// remove these elements which corners are too close to each other
     // first detect candidates to be removed
-
     vector< vector< pair< int, int > > > TooNearCandidates_omp(omp_get_max_threads());
 #pragma omp parallel for
     for (unsigned int i = 0; i < MarkerCanditates.size(); i++) {
@@ -416,7 +413,7 @@ void MarkerDetector::detectRectangles(vector< cv::Mat > &thresImgv, vector< Mark
             OutMarkerCanditates.push_back(MarkerCanditates[i]);
             //                 OutMarkerCanditates.back().contour=contours2[ MarkerCanditates[i].idx];
             if (swapped[i]) // if the corners where swapped, it is required to reverse here the points so that they are in the same order
-                reverse(OutMarkerCanditates.back().contour.begin(), OutMarkerCanditates.back().contour.end()); //????
+                reverse(OutMarkerCanditates.back().contour.begin(), OutMarkerCanditates.back().contour.end()); // ????
         }
     }
     /*
@@ -598,7 +595,6 @@ bool MarkerDetector::warp_cylinder(Mat &in, Mat &out, Size size, MarkerCandidate
 
     // check first the real need for cylinder warping
     //     cout<<"im="<<mcand.contour.size()<<endl;
-
     //     for (size_t i=0;i<mcand.contour.size();i++) {
     //         cv::rectangle(_ssImC ,mcand.contour[i],mcand.contour[i],cv::Scalar(111,111,111),-1 );
     //     }
@@ -619,7 +615,6 @@ bool MarkerDetector::warp_cylinder(Mat &in, Mat &out, Size size, MarkerCandidate
     // now, determine the sides that are deformated by cylinder perspective
     int defrmdSide = findDeformedSidesIdx(mcand.contour, idxSegments);
     //     cout<<"Def="<<defrmdSide<<endl;
-
     // instead of removing perspective distortion  of the rectangular region
     // given by the rectangle, we enlarge it a bit to include the deformed parts
     cv::Point2f center = mcand.getCenter();
@@ -648,8 +643,6 @@ bool MarkerDetector::warp_cylinder(Mat &in, Mat &out, Size size, MarkerCandidate
 
         }*/
     //     cv::imshow("imC",_ssImC);
-
-
     // calculate the max distance from each contour point the line of the corresponding segment it belongs to
     //     calculate
     //      cv::waitKey(0);
@@ -984,9 +977,9 @@ void MarkerDetector::draw(Mat out, const vector< Marker > &markers) {
 /* Attempt to make it faster than in opencv. I could not :( Maybe trying with SSE3...
 void MarkerDetector::warpPerspective(const cv::Mat &in,cv::Mat & out, const cv::Mat & M,cv::Size size)
 {
-   //inverse the matrix
+   // inverse the matrix
    out.create(size,in.type());
-   //convert to float to speed up operations
+   // convert to float to speed up operations
    const double *m=M.ptr<double>(0);
    float mf[9];
    mf[0]=m[0];mf[1]=m[1];mf[2]=m[2];
@@ -996,7 +989,7 @@ void MarkerDetector::warpPerspective(const cv::Mat &in,cv::Mat & out, const cv::
    for(int y=0;y<out.rows;y++){
      uchar *_ptrout=out.ptr<uchar>(y);
      for(int x=0;x<out.cols;x++){
-   //get the x,y position
+   // get the x,y position
    float den=1./(x*mf[6]+y*mf[7]+mf[8]);
    float ox= (x*mf[0]+y*mf[1]+mf[2])*den;
    float oy= (x*mf[3]+y*mf[4]+mf[5])*den;

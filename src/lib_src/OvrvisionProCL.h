@@ -1,71 +1,65 @@
 // OvrvisionProCL.h
 //
-//MIT License
-//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-//IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-//FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-//AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-//LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-//OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-//THE SOFTWAR
+// MIT License
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWAR
 //
 // Oculus Rift : TM & Copyright Oculus VR, Inc. All Rights Reserved
 // Unity : TM & Copyright Unity Technologies. All Rights Reserved
-
 // The following ifdef block is the standard way of creating macros which make exporting
 // from a DLL simpler. All files within this DLL are compiled with the OVRVISIONPRODLL_EXPORTS
 // symbol defined on the command line. This symbol should not be defined on any project
 // that uses this DLL. This way any other project whose source files include this file see
 // OVRVISIONPRODLL_API functions as being imported from a DLL, whereas this DLL sees symbols
 // defined with this macro as being exported.
-
-#ifdef WIN32
-#ifdef _OVRVISION_EXPORTS
-#define OVRVISIONPRODLL_API __declspec(dllexport)
+#if defined(WIN32)
+  #ifdef _OVRVISION_EXPORTS
+    #define OVRVISIONPRODLL_API __declspec(dllexport)
+  #else
+    #define OVRVISIONPRODLL_API __declspec(dllimport)
+  #endif
 #else
-#define OVRVISIONPRODLL_API __declspec(dllimport)
-#endif
-#else
-#define OVRVISIONPRODLL_API
+  #define OVRVISIONPRODLL_API
 #endif
 
 #include <opencv2/core/core.hpp>
 
 #define CL_USE_DEPRECATED_OPENCL_1_2_APIS // We use OpenCL 1.2 functions
-#ifdef WIN32
-// OpenCL header
-#include <CL/opencl.h>        // OpenCL and its extensions
-#include <CL/cl_d3d11.h>      // for OpenCL and DirectD3D11 interoperability (KHR)
-#include <CL/cl_d3d11_ext.h>  // for OpenCL and DirectD3D11 interoperability (NV)
-#include <windows.h>
-#include <dxgi.h>
-#include <d3d11.h>
-#include <GL/gl.h>
-typedef void* TEXTURE;
-#endif
-
-#ifdef MACOSX
-// OpenCL header
-#include <OpenCL/cl.h>          // OpenCL and its extensions
-#include <OpenCL/cl_ext.h>
-#include <OpenCL/cl_gl.h>       // OpenCL/OpenGL interoperability
-#include <OpenCL/cl_gl_ext.h>   // OpenCL/OpenGL interoperability
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
-#include <OpenGL/CGLDevice.h>
-#include <OpenGL/CGLCurrent.h>
-#include <sys/stat.h>
-typedef unsigned int TEXTURE;
-#endif
-
-#ifdef LINUX
-#include <CL/cl.h>          // OpenCL and its extensions
-#include <CL/cl_ext.h>
-#include <CL/cl_gl.h>       // OpenCL/OpenGL interoperability
-#include <CL/cl_gl_ext.h>   // OpenCL/OpenGL interoperability
-#include <GL/gl.h>
-#include <GL/glx.h>
-typedef unsigned int TEXTURE;
+#if defined(WIN32)
+  // OpenCL header
+  #include <CL/opencl.h>        // OpenCL and its extensions
+  #include <CL/cl_d3d11.h>      // for OpenCL and DirectD3D11 interoperability (KHR)
+  #include <CL/cl_d3d11_ext.h>  // for OpenCL and DirectD3D11 interoperability (NV)
+  #include <windows.h>
+  #include <dxgi.h>
+  #include <d3d11.h>
+  #include <GL/gl.h>
+  typedef void* TEXTURE;
+#elif defined(MACOSX)
+  // OpenCL header
+  #include <OpenCL/cl.h>          // OpenCL and its extensions
+  #include <OpenCL/cl_ext.h>
+  #include <OpenCL/cl_gl.h>       // OpenCL/OpenGL interoperability
+  #include <OpenCL/cl_gl_ext.h>   // OpenCL/OpenGL interoperability
+  #include <OpenGL/gl.h>
+  #include <OpenGL/glu.h>
+  #include <OpenGL/CGLDevice.h>
+  #include <OpenGL/CGLCurrent.h>
+  #include <sys/stat.h>
+  typedef unsigned int TEXTURE;
+#elif defined(LINUX)
+  #include <CL/cl.h>          // OpenCL and its extensions
+  #include <CL/cl_ext.h>
+  #include <CL/cl_gl.h>       // OpenCL/OpenGL interoperability
+  #include <CL/cl_gl_ext.h>   // OpenCL/OpenGL interoperability
+  #include <GL/gl.h>
+  #include <GL/glx.h>
+  typedef unsigned int TEXTURE;
 #endif
 
 // Ovrvision setting
@@ -79,7 +73,7 @@ namespace OVR
     NONE = 0,
     OPENGL,
     D3D11,
-    //D3D9
+    // D3D9
   };
 
   // Scaling
@@ -115,10 +109,10 @@ namespace OVR
   };
 
   // Convex object
-  //typedef struct {
+  // typedef struct {
   //  int mx, my;       // mass center
   //   std::vector<cv::Point> convexs;  // convex contor
-  //} Convex;
+  // } Convex;
 
   // OpenCL extension callback function
   typedef int(*EXTENSION_CALLBACK)(void* pItem, const char* extensions);
@@ -150,15 +144,15 @@ namespace OVR
     void Demosaic(const ushort* src, cl_event* event_l = NULL, cl_event* event_r = NULL); // for OpenGL/D3D sharing
     void Demosaic(const ushort* src, cl_mem left, cl_mem right, cl_event* event);
     void Demosaic(const ushort* src, uchar* left, uchar* right);
-    //void Demosaic(const ushort* src, Mat &left, Mat &right);
-    //void Demosaic(const Mat src, Mat &left, Mat &right);
+    // void Demosaic(const ushort* src, Mat &left, Mat &right);
+    // void Demosaic(const Mat src, Mat &left, Mat &right);
 
     // De-mosaic and Remap
     void DemosaicRemap(const ushort* src, cl_event* event_l = NULL, cl_event* event_r = NULL);  // for OpenGL/D3D sharing
     void DemosaicRemap(const ushort* src, cl_mem left, cl_mem right, cl_event* event_l, cl_event* event_r);
     void DemosaicRemap(const ushort* src, uchar* left, uchar* right);
-    //void DemosaicRemap(const ushort* src, Mat &left, Mat &right);
-    //void DemosaicRemap(const Mat src, Mat &left, Mat &right);
+    // void DemosaicRemap(const ushort* src, Mat &left, Mat &right);
+    // void DemosaicRemap(const Mat src, Mat &left, Mat &right);
 
     /*! @brief set scaling (1/2, 1/4, 1/8)
       @param scaling (HALF, FOURTH, EIGHTH)
@@ -194,16 +188,22 @@ namespace OVR
     void InspectTextures(uchar* left, uchar* right, uint type = 0);
     static bool CheckGPU();
 
-#ifdef WIN32
+    /// OpenCL accessors
+    cl_mem GetLeftCLImage();
+    cl_mem GetRightCLImage();
+    cl_context GetContext();
+    cl_device_id GetDeviceId();
+    cl_platform_id GetPlatformId();
+
+#if defined(WIN32)
     /*! @brief Get D3D11 Skin image for Unity Native
       @param pTexture
       @param pDevice */
-    //void SkinImageForUnityNativeD3D11(ID3D11Texture2D *pTexture[2], ID3D11Device* pDevice);
+    // void SkinImageForUnityNativeD3D11(ID3D11Texture2D *pTexture[2], ID3D11Device* pDevice);
 #endif // WIN32
-
     /*! @brief Get OpenGL skin image for Unity Native
               @param texture */
-    //void SkinImageForUnityNativeGL(GLuint texture[2]);
+    // void SkinImageForUnityNativeGL(GLuint texture[2]);
 
     /*! @brief Get Skin images
       @param left ptr of BGRA image
@@ -263,7 +263,7 @@ namespace OVR
     // dataType must be GL_UNSIGNED_BYTE
     cl_mem CreateGLTexture2D(GLuint texture, int width, int height);
 
-#ifdef WIN32
+#if defined(WIN32)
     // Direct3D shared texture
     cl_mem CreateD3DTexture2D(ID3D11Texture2D* texture, int width, int height);
 #endif
@@ -306,9 +306,9 @@ namespace OVR
     bool Prepare4Sharing();   // Prepare for OpenGL/D3D sharing
     void createProgram(const char* filename, bool binary = false);
     int saveBinary(const char* filename);
-    //bool SaveSettings(const char *filename);
+    // bool SaveSettings(const char *filename);
 
-#ifdef WIN32
+#if defined(WIN32)
     // D3D11 sharing depends on vendor specific extensions
     VENDOR _vendorD3D11;
     // Extension functions for NVIDIA
@@ -328,10 +328,10 @@ namespace OVR
     clEnqueueReleaseD3D11ObjectsKHR_fn  pclEnqueueReleaseD3D11ObjectsKHR = NULL;
 #endif
 
-#ifdef MACOSX
-    //clGetGLContextInfoKHR_fn      pclGetGLContextInfoKHR = NULL;
+#if defined(MACOSX)
+    // clGetGLContextInfoKHR_fn      pclGetGLContextInfoKHR = NULL;
 #else
-    //clGetGLContextInfoKHR_fn      pclGetGLContextInfoKHR = NULL;
+    // clGetGLContextInfoKHR_fn      pclGetGLContextInfoKHR = NULL;
 #endif
 
     char*       _deviceExtensions;
@@ -355,8 +355,8 @@ namespace OVR
     enum SHARING_MODE _sharing; // Sharing with OpenGL or Direct3D11
     enum SCALING      _scaling;
     size_t            _scaledRegion[3];
-    //Convex            _convex[2];     // Assume to be both hands
-    //KalmanFilter      _kalman[2];
+    // Convex            _convex[2];     // Assume to be both hands
+    // KalmanFilter      _kalman[2];
 
   protected:
     // OpenCL variables

@@ -53,7 +53,6 @@ class ARUCO_EXPORTS EMClassifier {
     void setProb(double p) { _threshProb = p; }
 
     //   double probConj[256];
-
   private:
 #ifdef OPENCV_VERSION_3
     cv::Ptr< cv::ml::EM > _classifier;
