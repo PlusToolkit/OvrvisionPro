@@ -533,38 +533,46 @@ namespace OVR
         int iCount = 0, iSize = 0;
         pCameraOutPin->QueryInterface(IID_IAMStreamConfig, (void**)&pAMSConfig);
 
-        pAMSConfig->GetNumberOfCapabilities(&iCount, &iSize);
-        for (int iFormat = 0; iFormat < iCount; iFormat++)
-        {
-          AM_MEDIA_TYPE* pmt;
-          char mediatype[16] = {0};
-          hr = pAMSConfig->GetStreamCaps(iFormat, &pmt, reinterpret_cast<BYTE*>(&scc));
+	int iFormatSel = -1;
+
+	//Media setting
+	if(SUCCEEDED(hr) && m_pMediaControl != NULL)
+	{
+		IEnumPins *ppEnum = NULL;
+		IPin *pCameraOutPin = NULL;
+		IAMStreamConfig *pAMSConfig = NULL;
+		VIDEO_STREAM_CONFIG_CAPS scc;
+		
+		m_pSrcFilter->EnumPins(&ppEnum);
+		if(SUCCEEDED(ppEnum->Next(1, &pCameraOutPin, NULL)))
+		{
+			//Media config
+			
+			int iCount = 0, iSize = 0;
+			pCameraOutPin->QueryInterface(IID_IAMStreamConfig, (void**)&pAMSConfig);
 
           // Get media information
           GetMediaSubtypeAsString(pmt->subtype, mediatype);
           VIDEOINFOHEADER* pVih = reinterpret_cast<VIDEOINFOHEADER*>(pmt->pbFormat);
           double framerate = 10000000.0 / pVih->AvgTimePerFrame;
 
-          // Set information
-          if (pVih->bmiHeader.biWidth == cam_w && pVih->bmiHeader.biHeight == cam_h
-              && pmt->subtype == MEDIASUBTYPE_YUY2 && std::abs(framerate - rate) < NEGLIGIBLE_DIFFERENCE)
-          {
-            hr = pAMSConfig->SetFormat(pmt);
-            m_width = pVih->bmiHeader.biWidth;
-            m_height = pVih->bmiHeader.biHeight;
-            m_rate = rate;
+					iFormatSel = iFormat;	//selected
+				}
 
             m_format = iFormat;
 
-            // mediatype free
-            CoTaskMemFree((PVOID)pmt->pbFormat);
-            if (pmt->pUnk)
-            {
-              pmt->pUnk->Release();
-            }
-            CoTaskMemFree(pmt);
-            break;
-          }
+	if (iFormatSel == -1) {
+		m_devstatus = OV_DEVNONE;
+		return RESULT_FAILED;		//ERROR
+	}
+
+	//Data area allocation
+	m_latestPixelDataSize = m_maxPixelDataSize = m_width*m_height*OV_RGB_COLOR;
+	
+	//Device running
+	m_devstatus = OV_DEVSTOP;
+	return RESULT_OK;
+}
 
           // mediatype free
           CoTaskMemFree((PVOID)pmt->pbFormat);

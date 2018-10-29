@@ -68,12 +68,12 @@ namespace OVR
 #endif
   }
 
-  // Initialize
-  // Open the Ovrvision
-  int OvrvisionPro::Open(int locationID, OVR::Camprop prop, const char* pVendorName, int deviceType, void* pDevice)
-  {
-    int objs = 0;
-    int challenge;
+//Initialize
+//Open the Ovrvision
+int OvrvisionPro::Open(int locationID, OVR::Camprop prop, const char *pVendorName, int deviceType, void *pDevice)
+{
+	int objs = 0;
+	int challenge;
 
     int cam_width;
     int cam_height;
@@ -180,21 +180,20 @@ namespace OVR
     m_pPixels[0] = new byte[cam_width * cam_height * OV_PIXELSIZE_RGB];
     m_pPixels[1] = new byte[cam_width * cam_height * OV_PIXELSIZE_RGB];
 
-    // Initialize OpenCL system
-    try
-    {
-      if (deviceType == 2 && pDevice != NULL)
-      {
-        m_pOpenCL = new OvrvisionProOpenCL(cam_width, cam_height, D3D11, pDevice, pVendorName); // When use D3D11 sharing texture
-      }
-      else if (deviceType == 0)
-      {
-        m_pOpenCL = new OvrvisionProOpenCL(cam_width, cam_height, OPENGL, NULL, pVendorName);    // When use OpenGL sharing texture
-      }
-      else
-      {
-        m_pOpenCL = new OvrvisionProOpenCL(cam_width, cam_height, NONE, NULL, pVendorName);
-      }
+	//Initialize OpenCL system
+	try {
+		if (deviceType == 2 && pDevice != NULL)
+		{
+			m_pOpenCL = new OvrvisionProOpenCL(cam_width, cam_height, D3D11, pDevice, pVendorName); // When use D3D11 sharing texture
+		}
+		else if (deviceType == 0)
+		{
+			m_pOpenCL = new OvrvisionProOpenCL(cam_width, cam_height, OPENGL, NULL, pVendorName);    // When use OpenGL sharing texture
+		}
+		else
+		{
+			m_pOpenCL = new OvrvisionProOpenCL(cam_width, cam_height, NONE, NULL, pVendorName);
+		}
     }
     catch (std::exception ex)
     {
@@ -577,11 +576,13 @@ namespace OVR
 #elif defined(LINUX)
       usleep(50000);
 #endif
-      m_focalpoint = ovrset.m_focalPoint.at<float>(0);
-      m_rightgap[0] = (float) - ovrset.m_trans.at<double>(0); // T:X
-      m_rightgap[1] = (float)ovrset.m_trans.at<double>(1);  // T:Y
-      m_rightgap[2] = (float)ovrset.m_trans.at<double>(2);  // T:Z
-    }
+		//calc to Pixel
+		ovrset.m_focalPoint.at<float>(0) *= ((ovrset.m_pixelSize.width / SensorSizeWidth) * SensorSizeScale);
+		m_focalpoint = ovrset.m_focalPoint.at<float>(0);
+		m_rightgap[0] = (float)-ovrset.m_trans.at<double>(0);	//T:X
+		m_rightgap[1] = (float)ovrset.m_trans.at<double>(1);	//T:Y
+		m_rightgap[2] = (float)ovrset.m_trans.at<double>(2);	//T:Z
+	}
 
     if (m_pOpenCL)
     {

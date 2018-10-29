@@ -70,7 +70,8 @@ namespace OVR
     // Save
     void SaveCalibrationParameter(OvrvisionPro* ovrpro);
 
-    int GetImageCount() const { return m_image_count; }
+	//Save
+	void SaveCalibrationParameter(OvrvisionPro* ovrpro, bool param_output = false);
 
     // Param : Camera intirinsic var
     std::vector< std::vector<cv::Point2f> > m_subpix_corners_left;
@@ -84,7 +85,15 @@ namespace OVR
       cv::Mat P;
     } m_cameraCalibration[OV_CAMNUM];
 
-  private:
+	struct {
+		cv::Size pixelSize;
+		cv::Mat intrinsic;
+		cv::Mat distortion;
+		cv::Mat R;
+		cv::Mat P;
+		double focalPoint;
+		double fovY;
+	} m_cameraCalibration[OV_CAMNUM];
 
     // Ready
     bool m_isReady;

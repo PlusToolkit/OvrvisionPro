@@ -117,18 +117,17 @@ namespace OVR
   // OpenCL extension callback function
   typedef int(*EXTENSION_CALLBACK)(void* pItem, const char* extensions);
 
-  // OpenCL version
-  class OVRVISIONPRODLL_API OvrvisionProOpenCL
-  {
-  public:
-    /*! @brief Constructor
-              @param width of image
-              @param height of image
-              @param mode of sharing with D3D11 or OpenGL
-              @param pDevice for D3D11
-              @param pVendorID for requesting GPU from given vendor*/
-    OvrvisionProOpenCL(int width, int height, enum SHARING_MODE mode = NONE, void* pDevice = NULL, const char* platform = NULL);
-    ~OvrvisionProOpenCL();
+	// OpenCL version
+	class OVRVISIONPRODLL_API OvrvisionProOpenCL {
+		public:
+			/*! @brief Constructor 
+                @param width of image
+                @param height of image
+                @param mode of sharing with D3D11 or OpenGL 
+                @param pDevice for D3D11 
+                @param pVendorID for requesting GPU from given vendor*/
+			OvrvisionProOpenCL(int width, int height, enum SHARING_MODE mode = NONE, void *pDevice = NULL, const char *platform = NULL);
+			~OvrvisionProOpenCL();
 
     /*! @brief release resources */
     void Close();

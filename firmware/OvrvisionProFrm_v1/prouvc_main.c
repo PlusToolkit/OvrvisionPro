@@ -87,7 +87,7 @@ uint8_t glProbeCtrl[CY_FX_UVC_MAX_PROBE_SETTING] = {
 static uint8_t glCommitCtrl[CY_FX_UVC_MAX_PROBE_SETTING_ALIGNED];
 
 /* Scratch buffer used for handling UVC class requests with a data phase. */
-static uint8_t glEp0Buffer[32] __attribute__ ((aligned (32)));
+static uint8_t glEp0Buffer[64] __attribute__ ((aligned (64)));
 
 /* UVC Header to be prefixed at the top of each 16 KB video data buffer. */
 uint8_t volatile glUVCHeader[CY_FX_UVC_MAX_HEADER] =
@@ -485,8 +485,6 @@ static void UVCApplnInit (void)
     /* Setup the Callback to Handle the GPIF INTR event */
     CyU3PGpifRegisterCallback (UVCFxGpifCB);
 
-    CyU3PThreadSleep(10); //10ms
-
     /* Image sensor initialization. Reset and then initialize with appropriate configuration. */
     apiRetStatus = OV5653SensorInit();
     if (apiRetStatus != CY_U3P_SUCCESS)
@@ -526,6 +524,8 @@ static void UVCApplnInit (void)
     CyU3PUsbSetDesc (CY_U3P_USB_SET_STRING_DESCR, 0, (uint8_t *)CyFxUSBStringLangIDDscr);
     CyU3PUsbSetDesc (CY_U3P_USB_SET_STRING_DESCR, 1, (uint8_t *)CyFxUSBManufactureDscr);
     CyU3PUsbSetDesc (CY_U3P_USB_SET_STRING_DESCR, 2, (uint8_t *)CyFxUSBProductDscr);
+
+    CyU3PThreadSleep(10);
 
     /* Configure the video streaming endpoint. */
     endPointConfig.enable   = 1;
@@ -1302,6 +1302,8 @@ void CyFxApplicationDefine (void)
     if (retThrdCreate != 0) {
         goto fatalErrorHandler;
     }
+
+    CyU3PThreadSleep (10);
 
     /* Create the control request handling thread. */
     retThrdCreate = CyU3PThreadCreate (&uvcAppEP0Thread,        /* UVC Thread structure */
