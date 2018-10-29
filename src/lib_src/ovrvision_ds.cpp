@@ -236,24 +236,78 @@ namespace OVR
 #define MSS_TEMPSIZE  (8)
 
     char tmpStr[MSS_TEMPSIZE];
-    if (type == MEDIASUBTYPE_RGB8) { sprintf_s(tmpStr, sizeof(tmpStr), "RGB8"); }
-    else if (type == MEDIASUBTYPE_RGB24) { sprintf_s(tmpStr, sizeof(tmpStr), "RGB24"); }
-    else if (type == MEDIASUBTYPE_RGB32) { sprintf_s(tmpStr, sizeof(tmpStr), "RGB32"); }
-    else if (type == MEDIASUBTYPE_RGB555) { sprintf_s(tmpStr, sizeof(tmpStr), "RGB555"); }
-    else if (type == MEDIASUBTYPE_RGB565) { sprintf_s(tmpStr, sizeof(tmpStr), "RGB565"); }
-    else if (type == MEDIASUBTYPE_MJPG)  { sprintf_s(tmpStr, sizeof(tmpStr), "MJPG"); }
-    else if (type == MEDIASUBTYPE_YUY2)  { sprintf_s(tmpStr, sizeof(tmpStr), "YUY2"); }
-    else if (type == MEDIASUBTYPE_YVYU)  { sprintf_s(tmpStr, sizeof(tmpStr), "YVYU"); }
-    else if (type == MEDIASUBTYPE_YUYV)  { sprintf_s(tmpStr, sizeof(tmpStr), "YUYV"); }
-    else if (type == MEDIASUBTYPE_IYUV)  { sprintf_s(tmpStr, sizeof(tmpStr), "IYUV"); }
-    else if (type == MEDIASUBTYPE_UYVY)  { sprintf_s(tmpStr, sizeof(tmpStr), "UYVY"); }
-    else if (type == MEDIASUBTYPE_YV12)  { sprintf_s(tmpStr, sizeof(tmpStr), "YV12"); }
-    else if (type == MEDIASUBTYPE_YVU9)  { sprintf_s(tmpStr, sizeof(tmpStr), "YVU9"); }
-    else if (type == MEDIASUBTYPE_Y411)  { sprintf_s(tmpStr, sizeof(tmpStr), "Y411"); }
-    else if (type == MEDIASUBTYPE_Y41P)  { sprintf_s(tmpStr, sizeof(tmpStr), "Y41P"); }
-    else if (type == MEDIASUBTYPE_Y211)  { sprintf_s(tmpStr, sizeof(tmpStr), "Y211"); }
-    else if (type == MEDIASUBTYPE_AYUV)  { sprintf_s(tmpStr, sizeof(tmpStr), "AYUV"); }
-    else { sprintf_s(tmpStr, sizeof(tmpStr), "OTHER"); }
+    if (type == MEDIASUBTYPE_RGB8)
+    {
+      sprintf_s(tmpStr, sizeof(tmpStr), "RGB8");
+    }
+    else if (type == MEDIASUBTYPE_RGB24)
+    {
+      sprintf_s(tmpStr, sizeof(tmpStr), "RGB24");
+    }
+    else if (type == MEDIASUBTYPE_RGB32)
+    {
+      sprintf_s(tmpStr, sizeof(tmpStr), "RGB32");
+    }
+    else if (type == MEDIASUBTYPE_RGB555)
+    {
+      sprintf_s(tmpStr, sizeof(tmpStr), "RGB555");
+    }
+    else if (type == MEDIASUBTYPE_RGB565)
+    {
+      sprintf_s(tmpStr, sizeof(tmpStr), "RGB565");
+    }
+    else if (type == MEDIASUBTYPE_MJPG)
+    {
+      sprintf_s(tmpStr, sizeof(tmpStr), "MJPG");
+    }
+    else if (type == MEDIASUBTYPE_YUY2)
+    {
+      sprintf_s(tmpStr, sizeof(tmpStr), "YUY2");
+    }
+    else if (type == MEDIASUBTYPE_YVYU)
+    {
+      sprintf_s(tmpStr, sizeof(tmpStr), "YVYU");
+    }
+    else if (type == MEDIASUBTYPE_YUYV)
+    {
+      sprintf_s(tmpStr, sizeof(tmpStr), "YUYV");
+    }
+    else if (type == MEDIASUBTYPE_IYUV)
+    {
+      sprintf_s(tmpStr, sizeof(tmpStr), "IYUV");
+    }
+    else if (type == MEDIASUBTYPE_UYVY)
+    {
+      sprintf_s(tmpStr, sizeof(tmpStr), "UYVY");
+    }
+    else if (type == MEDIASUBTYPE_YV12)
+    {
+      sprintf_s(tmpStr, sizeof(tmpStr), "YV12");
+    }
+    else if (type == MEDIASUBTYPE_YVU9)
+    {
+      sprintf_s(tmpStr, sizeof(tmpStr), "YVU9");
+    }
+    else if (type == MEDIASUBTYPE_Y411)
+    {
+      sprintf_s(tmpStr, sizeof(tmpStr), "Y411");
+    }
+    else if (type == MEDIASUBTYPE_Y41P)
+    {
+      sprintf_s(tmpStr, sizeof(tmpStr), "Y41P");
+    }
+    else if (type == MEDIASUBTYPE_Y211)
+    {
+      sprintf_s(tmpStr, sizeof(tmpStr), "Y211");
+    }
+    else if (type == MEDIASUBTYPE_AYUV)
+    {
+      sprintf_s(tmpStr, sizeof(tmpStr), "AYUV");
+    }
+    else
+    {
+      sprintf_s(tmpStr, sizeof(tmpStr), "OTHER");
+    }
 
     memcpy(typeAsString, tmpStr, sizeof(tmpStr));
   }
@@ -533,46 +587,38 @@ namespace OVR
         int iCount = 0, iSize = 0;
         pCameraOutPin->QueryInterface(IID_IAMStreamConfig, (void**)&pAMSConfig);
 
-	int iFormatSel = -1;
-
-	//Media setting
-	if(SUCCEEDED(hr) && m_pMediaControl != NULL)
-	{
-		IEnumPins *ppEnum = NULL;
-		IPin *pCameraOutPin = NULL;
-		IAMStreamConfig *pAMSConfig = NULL;
-		VIDEO_STREAM_CONFIG_CAPS scc;
-		
-		m_pSrcFilter->EnumPins(&ppEnum);
-		if(SUCCEEDED(ppEnum->Next(1, &pCameraOutPin, NULL)))
-		{
-			//Media config
-			
-			int iCount = 0, iSize = 0;
-			pCameraOutPin->QueryInterface(IID_IAMStreamConfig, (void**)&pAMSConfig);
+        pAMSConfig->GetNumberOfCapabilities(&iCount, &iSize);
+        for (int iFormat = 0; iFormat < iCount; iFormat++)
+        {
+          AM_MEDIA_TYPE* pmt;
+          char mediatype[16] = {0};
+          hr = pAMSConfig->GetStreamCaps(iFormat, &pmt, reinterpret_cast<BYTE*>(&scc));
 
           // Get media information
           GetMediaSubtypeAsString(pmt->subtype, mediatype);
           VIDEOINFOHEADER* pVih = reinterpret_cast<VIDEOINFOHEADER*>(pmt->pbFormat);
           double framerate = 10000000.0 / pVih->AvgTimePerFrame;
 
-					iFormatSel = iFormat;	//selected
-				}
+          // Set information
+          if (pVih->bmiHeader.biWidth == cam_w && pVih->bmiHeader.biHeight == cam_h
+              && pmt->subtype == MEDIASUBTYPE_YUY2 && std::abs(framerate - rate) < NEGLIGIBLE_DIFFERENCE)
+          {
+            hr = pAMSConfig->SetFormat(pmt);
+            m_width = pVih->bmiHeader.biWidth;
+            m_height = pVih->bmiHeader.biHeight;
+            m_rate = rate;
 
             m_format = iFormat;
 
-	if (iFormatSel == -1) {
-		m_devstatus = OV_DEVNONE;
-		return RESULT_FAILED;		//ERROR
-	}
-
-	//Data area allocation
-	m_latestPixelDataSize = m_maxPixelDataSize = m_width*m_height*OV_RGB_COLOR;
-	
-	//Device running
-	m_devstatus = OV_DEVSTOP;
-	return RESULT_OK;
-}
+            // mediatype free
+            CoTaskMemFree((PVOID)pmt->pbFormat);
+            if (pmt->pUnk)
+            {
+              pmt->pUnk->Release();
+            }
+            CoTaskMemFree(pmt);
+            break;
+          }
 
           // mediatype free
           CoTaskMemFree((PVOID)pmt->pbFormat);

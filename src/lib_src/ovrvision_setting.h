@@ -86,6 +86,7 @@ namespace OVR
     char m_propWhiteBalanceAuto;
 
     // UndistortSetting : External variable
+    cv::Size m_pixelSize;
     ovMat m_leftCameraInstric;
     ovMat m_rightCameraInstric;
     ovMat m_leftCameraDistortion;
@@ -95,16 +96,8 @@ namespace OVR
     ovMat m_trans;
     ovMat m_focalPoint;
 
-	//UndistortSetting : External variable
-	cv::Size m_pixelSize;
-	ovMat	m_leftCameraInstric;
-	ovMat	m_rightCameraInstric;
-	ovMat	m_leftCameraDistortion;
-	ovMat	m_rightCameraDistortion;
-	ovMat	m_R1;
-	ovMat	m_R2;
-	ovMat	m_trans;
-	ovMat	m_focalPoint;
+    cv::Rect m_leftROI;
+    cv::Rect m_rightROI;
 
     // system
     OvrvisionPro* m_pSystem;

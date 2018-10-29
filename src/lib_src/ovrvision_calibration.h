@@ -62,16 +62,15 @@ namespace OVR
     int InitializeCalibration(int img_size_w, int img_size_h, int pattern_size_w, int pattern_size_h,
                               double chess_length_mm, int max_chess_count = 10000);
 
-    // Detecter
+    // Detector
     bool FindChessBoardCorners(const unsigned char* left_img, const unsigned char* right_img);
     void DrawChessboardCorners(const unsigned char* src_img, unsigned char* dest_img, Cameye eye);
     void SolveStereoParameter();
 
-    // Save
-    void SaveCalibrationParameter(OvrvisionPro* ovrpro);
+    int GetImageCount() const;;
 
-	//Save
-	void SaveCalibrationParameter(OvrvisionPro* ovrpro, bool param_output = false);
+    //Save
+    void SaveCalibrationParameter(OvrvisionPro* ovrpro, bool param_output = false);
 
     // Param : Camera intirinsic var
     std::vector< std::vector<cv::Point2f> > m_subpix_corners_left;
@@ -79,25 +78,18 @@ namespace OVR
 
     struct
     {
+      cv::Size pixelSize;
       cv::Mat intrinsic;
       cv::Mat distortion;
       cv::Mat R;
       cv::Mat P;
+      double focalPoint;
+      double fovY;
     } m_cameraCalibration[OV_CAMNUM];
-
-	struct {
-		cv::Size pixelSize;
-		cv::Mat intrinsic;
-		cv::Mat distortion;
-		cv::Mat R;
-		cv::Mat P;
-		double focalPoint;
-		double fovY;
-	} m_cameraCalibration[OV_CAMNUM];
 
     // Ready
     bool m_isReady;
-    // image infomation
+    // image information
     int m_image_count;
     cv::Size m_image_size;    // image resolution
     cv::Size m_pattern_size;  // num. of col and row in a pattern

@@ -108,10 +108,14 @@ CSHARP_EXPORT int ovOpen(int locationID, float arMeter, int type)
 {
   // Create object
   if (g_ovOvrvision == NULL)
-  { g_ovOvrvision = new OVR::OvrvisionPro(); }  // MainVideo
+  {
+    g_ovOvrvision = new OVR::OvrvisionPro();  // MainVideo
+  }
   // Ovrvision Open
   if (g_ovOvrvision->Open(locationID, (OVR::Camprop)type) == 0) // 0=Error
-  { return 1; } // FALSE
+  {
+    return 1;  // FALSE
+  }
   // Create AR object
   if (g_ovOvrvisionAR == NULL)
     g_ovOvrvisionAR = new OVR::OvrvisionAR(arMeter, g_ovOvrvision->GetCamWidth(),
@@ -146,7 +150,9 @@ CSHARP_EXPORT int ovClose(void)
 
   // Close
   if (g_ovOvrvision)
-  { g_ovOvrvision->Close(); }
+  {
+    g_ovOvrvision->Close();
+  }
 
   return 0; // OK
 }
@@ -180,7 +186,9 @@ CSHARP_EXPORT int ovRelease(void)
 CSHARP_EXPORT void ovPreStoreCamData(int qt)
 {
   if (g_ovOvrvision == NULL)
-  { return; }
+  {
+    return;
+  }
 
   g_ovOvrvision->PreStoreCamData((OVR::Camqt)qt); // Renderer
 }
@@ -189,7 +197,9 @@ CSHARP_EXPORT void ovPreStoreCamData(int qt)
 CSHARP_EXPORT void ovGetCamImageBGRA(unsigned char* pImage, int eye)
 {
   if (g_ovOvrvision == NULL)
-  { return; }
+  {
+    return;
+  }
 
   // Get image
   g_ovOvrvision->GetCamImageBGRA(pImage, (OVR::Cameye)eye);
@@ -197,7 +207,9 @@ CSHARP_EXPORT void ovGetCamImageBGRA(unsigned char* pImage, int eye)
 CSHARP_EXPORT unsigned char* ovGetCamImageBGRAPointer(int eye)
 {
   if (g_ovOvrvision == NULL)
-  { return NULL; }
+  {
+    return NULL;
+  }
 
   // Get image
   return g_ovOvrvision->GetCamImageBGRA((OVR::Cameye)eye);
@@ -206,7 +218,9 @@ CSHARP_EXPORT unsigned char* ovGetCamImageBGRAPointer(int eye)
 CSHARP_EXPORT void ovGetCamImageRGB(unsigned char* pImage, int eye)
 {
   if (g_ovOvrvision == NULL)
-  { return; }
+  {
+    return;
+  }
 
   // local var
   int i, srcj = 0;
@@ -231,7 +245,9 @@ CSHARP_EXPORT void ovGetCamImageRGB(unsigned char* pImage, int eye)
 CSHARP_EXPORT void ovGetCamImageBGR(unsigned char* pImage, int eye)
 {
   if (g_ovOvrvision == NULL)
-  { return; }
+  {
+    return;
+  }
 
   // local var
   int i, srcj = 0;
@@ -257,7 +273,9 @@ CSHARP_EXPORT void ovGetCamImageBGR(unsigned char* pImage, int eye)
 CSHARP_EXPORT void ovGetCamImageForUnity(unsigned char* pImagePtr_Left, unsigned char* pImagePtr_Right)
 {
   if (g_ovOvrvision == NULL)
-  { return; }
+  {
+    return;
+  }
 
   // local var
   int i;
@@ -299,7 +317,9 @@ extern IDirect3DDevice9* g_D3D9Device;
 CSHARP_EXPORT void ovGetCamImageForUnityNative(void* pTexPtr_Left, void* pTexPtr_Right)
 {
   if (g_ovOvrvision == NULL)
-  { return; }
+  {
+    return;
+  }
 
   // Get image
   unsigned char* pLeft = g_ovOvrvision->GetCamImageBGRA(OVR::OV_CAMEYE_LEFT);
@@ -400,7 +420,9 @@ CSHARP_EXPORT int ovPutHandInFrontOfCamera(unsigned char thres_less, unsigned ch
 CSHARP_EXPORT int ovGetImageWidth()
 {
   if (g_ovOvrvision == NULL)
-  { return 0; }
+  {
+    return 0;
+  }
 
   return g_ovOvrvision->GetCamWidth();
 }
@@ -409,7 +431,9 @@ CSHARP_EXPORT int ovGetImageWidth()
 CSHARP_EXPORT int ovGetImageHeight()
 {
   if (g_ovOvrvision == NULL)
-  { return 0; }
+  {
+    return 0;
+  }
 
   return g_ovOvrvision->GetCamHeight();
 }
@@ -418,7 +442,9 @@ CSHARP_EXPORT int ovGetImageHeight()
 CSHARP_EXPORT int ovGetImageRate()
 {
   if (g_ovOvrvision == NULL)
-  { return 0; }
+  {
+    return 0;
+  }
 
   return g_ovOvrvision->GetCamFramerate();
 }
@@ -427,7 +453,9 @@ CSHARP_EXPORT int ovGetImageRate()
 CSHARP_EXPORT int ovGetBufferSize()
 {
   if (g_ovOvrvision == NULL)
-  { return 0; }
+  {
+    return 0;
+  }
 
   return g_ovOvrvision->GetCamBuffersize();
 }
@@ -436,7 +464,9 @@ CSHARP_EXPORT int ovGetBufferSize()
 CSHARP_EXPORT int ovGetPixelSize()
 {
   if (g_ovOvrvision == NULL)
-  { return 0; }
+  {
+    return 0;
+  }
 
   return g_ovOvrvision->GetCamPixelsize();
 }
@@ -445,7 +475,9 @@ CSHARP_EXPORT int ovGetPixelSize()
 CSHARP_EXPORT void ovSetExposure(int value)
 {
   if (g_ovOvrvision == NULL)
-  { return; }
+  {
+    return;
+  }
 
   g_ovOvrvision->SetCameraExposure(value);
 }
@@ -453,7 +485,9 @@ CSHARP_EXPORT void ovSetExposure(int value)
 CSHARP_EXPORT int ovSetExposurePerSec(float fps)
 {
   if (g_ovOvrvision == NULL)
-  { return 0; }
+  {
+    return 0;
+  }
 
   return g_ovOvrvision->SetCameraExposurePerSec(fps);
 }
@@ -463,7 +497,9 @@ CSHARP_EXPORT int ovSetExposurePerSec(float fps)
 CSHARP_EXPORT void ovSetGain(int value)
 {
   if (g_ovOvrvision == NULL)
-  { return; }
+  {
+    return;
+  }
 
   g_ovOvrvision->SetCameraGain(value);
 }
@@ -472,7 +508,9 @@ CSHARP_EXPORT void ovSetGain(int value)
 CSHARP_EXPORT void ovSetWhiteBalanceR(int value)
 {
   if (g_ovOvrvision == NULL)
-  { return; }
+  {
+    return;
+  }
 
   g_ovOvrvision->SetCameraWhiteBalanceR(value);
 }
@@ -481,7 +519,9 @@ CSHARP_EXPORT void ovSetWhiteBalanceR(int value)
 CSHARP_EXPORT void ovSetWhiteBalanceG(int value)
 {
   if (g_ovOvrvision == NULL)
-  { return; }
+  {
+    return;
+  }
 
   g_ovOvrvision->SetCameraWhiteBalanceG(value);
 }
@@ -490,7 +530,9 @@ CSHARP_EXPORT void ovSetWhiteBalanceG(int value)
 CSHARP_EXPORT void ovSetWhiteBalanceB(int value)
 {
   if (g_ovOvrvision == NULL)
-  { return; }
+  {
+    return;
+  }
 
   g_ovOvrvision->SetCameraWhiteBalanceB(value);
 }
@@ -499,7 +541,9 @@ CSHARP_EXPORT void ovSetWhiteBalanceB(int value)
 CSHARP_EXPORT void ovSetWhiteBalanceAuto(int value)
 {
   if (g_ovOvrvision == NULL)
-  { return; }
+  {
+    return;
+  }
 
   g_ovOvrvision->SetCameraWhiteBalanceAuto((bool)value);
 }
@@ -508,7 +552,9 @@ CSHARP_EXPORT void ovSetWhiteBalanceAuto(int value)
 CSHARP_EXPORT void ovSetBLC(int value)
 {
   if (g_ovOvrvision == NULL)
-  { return; }
+  {
+    return;
+  }
 
   g_ovOvrvision->SetCameraBLC(value);
 }
@@ -517,7 +563,9 @@ CSHARP_EXPORT void ovSetBLC(int value)
 CSHARP_EXPORT void ovSetCamSyncMode(int value)
 {
   if (g_ovOvrvision == NULL)
-  { return; }
+  {
+    return;
+  }
 
   g_ovOvrvision->SetCameraSyncMode((bool)value);
 }
@@ -526,7 +574,9 @@ CSHARP_EXPORT void ovSetCamSyncMode(int value)
 CSHARP_EXPORT int ovGetExposure()
 {
   if (g_ovOvrvision == NULL)
-  { return 0; }
+  {
+    return 0;
+  }
 
   return g_ovOvrvision->GetCameraExposure();
 }
@@ -535,7 +585,9 @@ CSHARP_EXPORT int ovGetExposure()
 CSHARP_EXPORT int ovGetGain()
 {
   if (g_ovOvrvision == NULL)
-  { return 0; }
+  {
+    return 0;
+  }
 
   return g_ovOvrvision->GetCameraGain();
 }
@@ -544,7 +596,9 @@ CSHARP_EXPORT int ovGetGain()
 CSHARP_EXPORT int ovGetWhiteBalanceR()
 {
   if (g_ovOvrvision == NULL)
-  { return 0; }
+  {
+    return 0;
+  }
 
   return g_ovOvrvision->GetCameraWhiteBalanceR();
 }
@@ -553,7 +607,9 @@ CSHARP_EXPORT int ovGetWhiteBalanceR()
 CSHARP_EXPORT int ovGetWhiteBalanceG()
 {
   if (g_ovOvrvision == NULL)
-  { return 0; }
+  {
+    return 0;
+  }
 
   return g_ovOvrvision->GetCameraWhiteBalanceG();
 }
@@ -562,7 +618,9 @@ CSHARP_EXPORT int ovGetWhiteBalanceG()
 CSHARP_EXPORT int ovGetWhiteBalanceB()
 {
   if (g_ovOvrvision == NULL)
-  { return 0; }
+  {
+    return 0;
+  }
 
   return g_ovOvrvision->GetCameraWhiteBalanceB();
 }
@@ -570,7 +628,9 @@ CSHARP_EXPORT int ovGetWhiteBalanceB()
 CSHARP_EXPORT int ovGetWhiteBalanceAuto()
 {
   if (g_ovOvrvision == NULL)
-  { return 0; }
+  {
+    return 0;
+  }
 
   return (int)g_ovOvrvision->GetCameraWhiteBalanceAuto();
 }
@@ -579,7 +639,9 @@ CSHARP_EXPORT int ovGetWhiteBalanceAuto()
 CSHARP_EXPORT int ovGetBLC()
 {
   if (g_ovOvrvision == NULL)
-  { return 0; }
+  {
+    return 0;
+  }
 
   return g_ovOvrvision->GetCameraBLC();
 }
@@ -588,7 +650,9 @@ CSHARP_EXPORT int ovGetBLC()
 CSHARP_EXPORT float ovGetFocalPoint()
 {
   if (g_ovOvrvision == NULL)
-  { return 0; }
+  {
+    return 0;
+  }
 
   return g_ovOvrvision->GetCamFocalPoint();
 }
@@ -597,7 +661,9 @@ CSHARP_EXPORT float ovGetFocalPoint()
 CSHARP_EXPORT float ovGetHMDRightGap(int at)
 {
   if (g_ovOvrvision == NULL)
-  { return 0; }
+  {
+    return 0;
+  }
 
   return g_ovOvrvision->GetHMDRightGap(at);
 }
@@ -607,14 +673,16 @@ CSHARP_EXPORT float ovGetHMDRightGap(int at)
 CSHARP_EXPORT int ovSaveCamStatusToEEPROM()
 {
   if (g_ovOvrvision == NULL)
-  { return 0; }
+  {
+    return 0;
+  }
 
   return g_ovOvrvision->CameraParamSaveEEPROM();
 }
 
 CSHARP_EXPORT void* ovOvrvisionProObject()
 {
-	return (void*)g_ovOvrvision;
+  return (void*)g_ovOvrvision;
 }
 
 ////////////// Ovrvision AR //////////////
@@ -623,7 +691,9 @@ CSHARP_EXPORT void* ovOvrvisionProObject()
 CSHARP_EXPORT void ovARRender()
 {
   if (g_ovOvrvisionAR == NULL)
-  { return; }
+  {
+    return;
+  }
 
   unsigned char* pLeft = g_ovOvrvision->GetCamImageBGRA(OVR::OV_CAMEYE_LEFT);
   g_ovOvrvisionAR->SetImageBGRA(pLeft);
@@ -637,10 +707,14 @@ CSHARP_EXPORT int ovARGetData(float* mdata, int datasize)
 {
   int i;
   if (g_ovOvrvisionAR == NULL)
-  { return (-1); }
+  {
+    return (-1);
+  }
 
   if (mdata == NULL)
-  { return (-1); }
+  {
+    return (-1);
+  }
 
   int marklen = g_ovOvrvisionAR->GetMarkerDataSize();
   OVR::OvMarkerData* dt = g_ovOvrvisionAR->GetMarkerData();
@@ -649,7 +723,9 @@ CSHARP_EXPORT int ovARGetData(float* mdata, int datasize)
   {
     int ioffset = i * FLOATDATA_DATA_OFFSET;
     if (i >= (datasize / FLOATDATA_DATA_OFFSET))
-    { break; }
+    {
+      break;
+    }
 
     mdata[ioffset + 0] = (float)dt[i].id;
     mdata[ioffset + 1] = dt[i].translate.x;
@@ -670,7 +746,9 @@ CSHARP_EXPORT int ovARGetData(float* mdata, int datasize)
 CSHARP_EXPORT void ovARSetMarkerSize(float value)
 {
   if (g_ovOvrvisionAR == NULL)
-  { return; }
+  {
+    return;
+  }
 
   g_ovOvrvisionAR->SetMarkerSizeMeter(value);
 }
@@ -679,7 +757,9 @@ CSHARP_EXPORT void ovARSetMarkerSize(float value)
 CSHARP_EXPORT float ovARGetMarkerSize()
 {
   if (g_ovOvrvisionAR == NULL)
-  { return 0; }
+  {
+    return 0;
+  }
 
   return g_ovOvrvisionAR->GetMarkerSizeMeter();
 }
@@ -688,7 +768,9 @@ CSHARP_EXPORT float ovARGetMarkerSize()
 CSHARP_EXPORT void ov3DInstantTraking_Metaio(int value)
 {
   if (g_ovOvrvisionAR == NULL)
-  { return; }
+  {
+    return;
+  }
 
   g_ovOvrvisionAR->SetInstantTraking((bool)value);
 }
@@ -698,7 +780,9 @@ CSHARP_EXPORT void ov3DInstantTraking_Metaio(int value)
 CSHARP_EXPORT void ovTrackRender(bool calib, bool point)
 {
   if (g_ovOvrvisionTrack == NULL)
-  { return; }
+  {
+    return;
+  }
 
   unsigned char* pLeft = g_ovOvrvision->GetCamImageBGRA(OVR::OV_CAMEYE_LEFT);
   unsigned char* pRight = g_ovOvrvision->GetCamImageBGRA(OVR::OV_CAMEYE_RIGHT);
@@ -710,17 +794,23 @@ CSHARP_EXPORT void ovTrackRender(bool calib, bool point)
 CSHARP_EXPORT int ovGetTrackData(float* mdata)
 {
   if (g_ovOvrvisionTrack == NULL)
-  { return 0 ; }
+  {
+    return 0 ;
+  }
 
   if (mdata == NULL)
-  { return (-1); }
+  {
+    return (-1);
+  }
 
   mdata[0] = g_ovOvrvisionTrack->FingerPosX();
   mdata[1] = g_ovOvrvisionTrack->FingerPosY();
   mdata[2] = g_ovOvrvisionTrack->FingerPosZ();
 
   if (mdata[2] <= 0.0f || mdata[2] >= 1.0f) // z0.0~1.0
-  { return 0; }
+  {
+    return 0;
+  }
 
   return 1;
 }
@@ -728,7 +818,9 @@ CSHARP_EXPORT int ovGetTrackData(float* mdata)
 CSHARP_EXPORT void ovTrackingCalibReset()
 {
   if (g_ovOvrvisionTrack == NULL)
-  { return; }
+  {
+    return;
+  }
 
   g_ovOvrvisionTrack->SetHue();
 }
@@ -737,10 +829,14 @@ CSHARP_EXPORT void ovTrackingCalibReset()
 CSHARP_EXPORT void ovCalibInitialize(int pattern_size_w, int pattern_size_h, double chessSizeMM)
 {
   if (g_ovOvrvision == NULL)
-  { return; }
+  {
+    return;
+  }
 
   if (g_ovOvrvisionCalib)
-  { delete g_ovOvrvisionCalib; }
+  {
+    delete g_ovOvrvisionCalib;
+  }
 
   g_ovOvrvisionCalib = new OVR::OvrvisionCalibration(
     g_ovOvrvision->GetCamWidth(), g_ovOvrvision->GetCamHeight(),
@@ -750,13 +846,17 @@ CSHARP_EXPORT void ovCalibInitialize(int pattern_size_w, int pattern_size_h, dou
 CSHARP_EXPORT void ovCalibClose()
 {
   if (g_ovOvrvisionCalib)
-  { delete g_ovOvrvisionCalib; }
+  {
+    delete g_ovOvrvisionCalib;
+  }
 }
 
 CSHARP_EXPORT int ovCalibFindChess()
 {
   if (g_ovOvrvisionCalib == NULL)
-  { return 0; }
+  {
+    return 0;
+  }
 
   g_ovOvrvision->PreStoreCamData(OVR::OV_CAMQT_DMS);  // ReRenderer
   unsigned char* pLeft = g_ovOvrvision->GetCamImageBGRA(OVR::OV_CAMEYE_LEFT);
@@ -768,19 +868,25 @@ CSHARP_EXPORT int ovCalibFindChess()
 CSHARP_EXPORT void ovCalibSolveStereoParameter(bool param_output)
 {
   if (g_ovOvrvision == NULL)
-  { return; }
+  {
+    return;
+  }
   if (g_ovOvrvisionCalib == NULL)
-  { return; }
+  {
+    return;
+  }
 
-	g_ovOvrvisionCalib->SolveStereoParameter();
-	g_ovOvrvisionCalib->SaveCalibrationParameter(g_ovOvrvision, param_output);	//default 
-	//g_ovOvrvisionCalib->SaveCalibrationParameterToEEPROM();
+  g_ovOvrvisionCalib->SolveStereoParameter();
+  g_ovOvrvisionCalib->SaveCalibrationParameter(g_ovOvrvision, param_output);  //default
+  //g_ovOvrvisionCalib->SaveCalibrationParameterToEEPROM();
 }
 
 CSHARP_EXPORT int ovCalibGetImageCount()
 {
   if (g_ovOvrvisionCalib == NULL)
-  { return -1; }
+  {
+    return -1;
+  }
 
   return g_ovOvrvisionCalib->GetImageCount();
 }

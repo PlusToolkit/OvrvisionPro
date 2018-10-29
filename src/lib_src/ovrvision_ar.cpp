@@ -58,9 +58,13 @@ namespace OVR
     else if (w <= 640)
     {
       if (w <= 320)
-      { focalPointScale = 0.25f; }
+      {
+        focalPointScale = 0.25f;
+      }
       else
-      { focalPointScale = 0.5f; }
+      {
+        focalPointScale = 0.5f;
+      }
     }
 
     // Default camera matrix
@@ -86,7 +90,9 @@ namespace OVR
     delete m_cameraParam;
 
     if (m_pMarkerData)
-    { delete[] m_pMarkerData; }
+    {
+      delete[] m_pMarkerData;
+    }
   }
 
   // Private Methods
@@ -170,7 +176,7 @@ namespace OVR
     m_pImageOpenCVMat = pImageMat;
   }
 
-  // Detectmarker
+  // Detect marker
   void OvrvisionAR::Render()
   {
     // opencv var
@@ -179,7 +185,9 @@ namespace OVR
     std::vector<aruco::Marker> markers;
 
     if (m_pImageSrc == NULL && m_pImageOpenCVMat == NULL)
-    { return; }
+    {
+      return;
+    }
 
     // create image
     pGrayImg = cv::Mat(cv::Size(m_width, m_height), CV_MAKETYPE(CV_8U, 1));
@@ -187,11 +195,11 @@ namespace OVR
     {
       pCamBGRAImg = cv::Mat(cv::Size(m_width, m_height), CV_MAKETYPE(CV_8U, OV_RGB_DATASIZE), m_pImageSrc);
       // convert color
-      cv::cvtColor(pCamBGRAImg, pGrayImg, CV_BGRA2GRAY);
+      cv::cvtColor(pCamBGRAImg, pGrayImg, cv::COLOR_BGR2GRAY);
     }
     else
     {
-      cv::cvtColor((*m_pImageOpenCVMat), pGrayImg, CV_BGRA2GRAY);
+      cv::cvtColor((*m_pImageOpenCVMat), pGrayImg, cv::COLOR_BGR2GRAY);
     }
 
     // detect
@@ -201,7 +209,9 @@ namespace OVR
     // edit data
     m_markerDataSize = (int)markers.size();
     if (m_pMarkerData)
-    { delete[] m_pMarkerData; }
+    {
+      delete[] m_pMarkerData;
+    }
     m_pMarkerData = new OVR::OvMarkerData[m_markerDataSize];
 
     // insert
@@ -260,7 +270,9 @@ namespace OVR
   OVR::OvMarkerData* OvrvisionAR::GetMarkerData(int idx)
   {
     if (m_markerDataSize < idx)
-    { return NULL; }
+    {
+      return NULL;
+    }
 
     return &m_pMarkerData[idx];
   }

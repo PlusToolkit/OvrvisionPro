@@ -130,14 +130,14 @@ namespace OVR
     unsigned int height;  // !Height
   } ROI;
 
-//Sensor Define
-const double SensorSizeWidth = 4.529;
-const double SensorSizeHeight = 3.423;
-const double SensorSizeScale = 0.7;
+  //Sensor Define
+  const double SensorSizeWidth = 4.529;
+  const double SensorSizeHeight = 3.423;
+  const double SensorSizeScale = 0.7;
 
-//unsigned char to byte
-typedef unsigned char byte;
-typedef unsigned char* pbyte;
+  //unsigned char to byte
+  typedef unsigned char byte;
+  typedef unsigned char* pbyte;
 
   /////////// CLASS ///////////
   class OVRPORT OvrvisionPro
@@ -158,17 +158,6 @@ typedef unsigned char* pbyte;
     /*! @brief Close the Ovrvision Pro */
     void Close();
 
-	//Initialize
-	/*!	@brief Open the Ovrvision Pro
-		@param locationID Connection number
-		@param prop Camera property
-		@param pVendorName c style string with the vendor name ("NVIDIA Corporation", "Intel(R) Corporation", )
-        @param deviceType (2:D3D11, 0:OpenGL, -1:Dont share)
-		@param pD3D11Device ptr to D3D11 device when deviceType == 2
-		@return If successful, the return value is 0< */
-	int Open(int locationID, OVR::Camprop prop, const char *pVendorName = NULL, int deviceType = -1, void *pD3D11Device = NULL);
-	/*!	@brief Close the Ovrvision Pro */
-	void Close();
     // Processor
     /*! @brief This function gets data from OvrvisionPro inside.
       @param qt Set an image processing method. */

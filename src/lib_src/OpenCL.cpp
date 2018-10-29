@@ -356,22 +356,13 @@ namespace OVR
     _height = height;
     _sharing = mode;
 
-	//namespace OPENCL
-	//{
-#pragma region CONSTRUCTOR_DESTRUCTOR
-		// Constructor
-	OvrvisionProOpenCL::OvrvisionProOpenCL(int width, int height, enum SHARING_MODE mode, void *pDevice, const char *platform)
-		{
-			_width = width;
-			_height = height;
-			_sharing = mode;
+    if (SelectGPU(platform, "OpenCL C 1.2") == NULL) // Find OpenCL(version 1.2 and above) device
+    {
+      throw std::runtime_error("Insufficient OpenCL version");
+    }
 
-			if (SelectGPU(platform, "OpenCL C 1.2") == NULL) // Find OpenCL(version 1.2 and above) device 
-			{
-                throw std::runtime_error("Insufficient OpenCL version");
-			}
-#ifdef MACOSX
-			//pclGetGLContextInfoKHR = GETFUNCTION(_platformId, clGetGLContextInfoKHR);
+#if defined(MACOSX)
+    // pclGetGLContextInfoKHR = GETFUNCTION(_platformId, clGetGLContextInfoKHR);
 #else
     // pclGetGLContextInfoKHR = GETFUNCTION(_platformId, clGetGLContextInfoKHR);
 #endif
@@ -450,7 +441,9 @@ namespace OVR
   OvrvisionProOpenCL::~OvrvisionProOpenCL()
   {
     if (!_released)
-    { Close(); }
+    {
+      Close();
+    }
   }
 
   void OvrvisionProOpenCL::Close()
@@ -549,93 +542,62 @@ namespace OVR
       // Get the log
       clGetProgramBuildInfo(_program, _deviceId, CL_PROGRAM_BUILD_LOG, log_size, log, NULL);
 
-		cl_uint maxFreq = 0;
-		cl_uint maxUnits = 0;
-		size_t length;
-		bool device_found = false;
-		vector<cl_device_id> devices;
+      // Print the log
+      printf("%s\n", log);
+      free(log);
+      return false;
+    }
+    else
+    {
+      _demosaic = clCreateKernel(_program, "demosaic", &_errorCode);
+      SAMPLE_CHECK_ERRORS(_errorCode);
+      _remap = clCreateKernel(_program, "remap", &_errorCode);
+      SAMPLE_CHECK_ERRORS(_errorCode);
+      _resize = clCreateKernel(_program, "resize", &_errorCode);
+      SAMPLE_CHECK_ERRORS(_errorCode);
+      _convertHSV = clCreateKernel(_program, "convertHSV", &_errorCode);
+      SAMPLE_CHECK_ERRORS(_errorCode);
+      _convertGrayscale = clCreateKernel(_program, "convertGrayscale", &_errorCode);
+      SAMPLE_CHECK_ERRORS(_errorCode);
+      _skincolor = clCreateKernel(_program, "skincolor", &_errorCode);
+      SAMPLE_CHECK_ERRORS(_errorCode);
+      _gaussianBlur3x3 = clCreateKernel(_program, "gaussian3x3", &_errorCode);
+      SAMPLE_CHECK_ERRORS(_errorCode);
+      _medianBlur3x3 = clCreateKernel(_program, "median3x3_H", &_errorCode);
+      SAMPLE_CHECK_ERRORS(_errorCode);
+      _medianBlur5x5 = clCreateKernel(_program, "median5x5_H", &_errorCode);
+      SAMPLE_CHECK_ERRORS(_errorCode);
+      _mask = clCreateKernel(_program, "mask", &_errorCode);
+      SAMPLE_CHECK_ERRORS(_errorCode);
+      _maskOpengl = clCreateKernel(_program, "mask_opengl", &_errorCode);
+      SAMPLE_CHECK_ERRORS(_errorCode);
+      _maskD3D11 = clCreateKernel(_program, "mask_d3d11", &_errorCode);
+      SAMPLE_CHECK_ERRORS(_errorCode);
+      _invertMask = clCreateKernel(_program, "invert_mask", &_errorCode);
+      SAMPLE_CHECK_ERRORS(_errorCode);
+      _toneCorrection = clCreateKernel(_program, "tone", &_errorCode);
+      SAMPLE_CHECK_ERRORS(_errorCode);
+      _resizeTone = clCreateKernel(_program, "resize_tone", &_errorCode);
+      SAMPLE_CHECK_ERRORS(_errorCode);
+      _convertHSVTone = clCreateKernel(_program, "convertHSVTone", &_errorCode);
+      SAMPLE_CHECK_ERRORS(_errorCode);
+      _maskTone = clCreateKernel(_program, "maskTone", &_errorCode);
+      SAMPLE_CHECK_ERRORS(_errorCode);
+      _maskOpenglTone = clCreateKernel(_program, "mask_openglTone", &_errorCode);
+      SAMPLE_CHECK_ERRORS(_errorCode);
+      _copyOpengl = clCreateKernel(_program, "copy_opengl", &_errorCode);
+      SAMPLE_CHECK_ERRORS(_errorCode);
+      return true;
+    }
+  }
 
-		// Search GPU
-		for (cl_uint i = 0; i < num_of_platforms; i++)
-		{
-			if (platform != NULL)
-			{
-				std::string platformStr(platform);
-				char vendor[80];
-				if (clGetPlatformInfo(platforms[i], CL_PLATFORM_VENDOR, 80, vendor, &length) == CL_SUCCESS)
-				{
-					std::string thisPlatformStr(vendor);
-					if (platformStr.compare(thisPlatformStr) != 0)
-					{
-						// Skip because not the requested vendorID
-						continue;
-					}
-				}
-				else
-				{
-					// Unable to find Vendor ID, skipping
-					continue;
-				}
-			}
-
-			cl_uint num_of_devices = 0;
-			if (CL_SUCCESS == clGetDeviceIDs(
-				platforms[i],
-				CL_DEVICE_TYPE_GPU,
-				0,
-				0,
-				&num_of_devices
-				))
-			{
-				cl_device_id *id = new cl_device_id[num_of_devices];
-				err = clGetDeviceIDs(
-					platforms[i],
-					CL_DEVICE_TYPE_GPU,
-					num_of_devices,
-					id,
-					0
-					);
-				//SAMPLE_CHECK_ERRORS(err);
-				for (cl_uint j = 0; j < num_of_devices; j++)
-				{
-					devices.push_back(id[j]);
-					char buffer[32];
-					if (clGetDeviceInfo(id[j], CL_DEVICE_OPENCL_C_VERSION, sizeof(buffer), buffer, &length) == CL_SUCCESS)
-					{
-						char devicename[128];
-						cl_uint freq, units;
-						clGetDeviceInfo(id[j], CL_DEVICE_MAX_CLOCK_FREQUENCY, sizeof(cl_uint), &freq, &length);
-						clGetDeviceInfo(id[j], CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(cl_uint), &units, &length);
-						clGetDeviceInfo(id[j], CL_DEVICE_NAME, sizeof(devicename), devicename, NULL);
-						printf("%s %d Compute units %dMHz : %s\n", devicename, units, freq, buffer);
-						if (strcmp(buffer, version) >= 0)
-						{
-							if ((maxFreq * maxUnits) < (freq * units))
-							{
-								_platformId = platforms[i];
-								_deviceId = id[j];
-								maxFreq = freq;
-								maxUnits = units;
-								device_found = true;
-
-								//NVIDIA or AMD priority
-								clGetPlatformInfo(_platformId, CL_PLATFORM_NAME, sizeof(devicename), devicename, NULL);
-								if (strstr(devicename, "NVIDIA") != NULL) maxFreq *= 100;
-								if (strstr(devicename, "Advanced Micro Devices") != NULL) maxFreq *= 100;
-								if (strstr(devicename, "AMD") != NULL) maxFreq *= 100;
-							}
-						}
-					}
-				}
-				delete[] id;
-			}
-		}
-		if (!device_found)
-		{
-            throw std::runtime_error("GPU NOT FOUND.\nRequired OpenCL 1.2 or above.\n");
-		}
-		return _deviceId;
-	}
+  // Select GPU device
+  cl_device_id OvrvisionProOpenCL::SelectGPU(const char* platform, const char* version)
+  {
+    cl_uint num_of_platforms = 0;
+    // get total number of available platforms:
+    cl_int err = clGetPlatformIDs(0, 0, &num_of_platforms);
+    SAMPLE_CHECK_ERRORS(err);
 
     vector<cl_platform_id> platforms(num_of_platforms);
     // get IDs for all platforms:
@@ -800,26 +762,26 @@ namespace OVR
         0
       };
 #endif
-			size_t devSizeInBytes = 0;
-			pclGetGLContextInfoKHR(opengl_props, CL_DEVICES_FOR_GL_CONTEXT_KHR, 0, NULL, &devSizeInBytes);
-			const size_t devNum = devSizeInBytes / sizeof(cl_device_id);
-			if (devNum)
-			{
-				std::vector<cl_device_id> devices(devNum);
-				pclGetGLContextInfoKHR(opengl_props, CL_DEVICES_FOR_GL_CONTEXT_KHR, devSizeInBytes, &devices[0], NULL);
-				for (size_t k = 0; k < devNum; k++)
-				{
-					cl_device_type t;
-					clGetDeviceInfo(devices[k], CL_DEVICE_TYPE, sizeof(t), &t, NULL);
-					if (t == CL_DEVICE_TYPE_GPU)
-					{
-						clGetDeviceInfo(devices[k], CL_DEVICE_NAME, sizeof(devicename), devicename, NULL);
-						char buffer[32];
-						clGetDeviceInfo(devices[k], CL_DEVICE_OPENCL_C_VERSION, sizeof(buffer), buffer, NULL);
-						printf("\t%s %s\n", devicename, buffer);
-					}
-				}
-			}
+      size_t devSizeInBytes = 0;
+      pclGetGLContextInfoKHR(opengl_props, CL_DEVICES_FOR_GL_CONTEXT_KHR, 0, NULL, &devSizeInBytes);
+      const size_t devNum = devSizeInBytes / sizeof(cl_device_id);
+      if (devNum)
+      {
+        std::vector<cl_device_id> devices(devNum);
+        pclGetGLContextInfoKHR(opengl_props, CL_DEVICES_FOR_GL_CONTEXT_KHR, devSizeInBytes, &devices[0], NULL);
+        for (size_t k = 0; k < devNum; k++)
+        {
+          cl_device_type t;
+          clGetDeviceInfo(devices[k], CL_DEVICE_TYPE, sizeof(t), &t, NULL);
+          // if (t == CL_DEVICE_TYPE_GPU)
+          {
+            clGetDeviceInfo(devices[k], CL_DEVICE_NAME, sizeof(devicename), devicename, NULL);
+            char buffer[32];
+            clGetDeviceInfo(devices[k], CL_DEVICE_OPENCL_C_VERSION, sizeof(buffer), buffer, NULL);
+            printf("\t%s %s\n", devicename, buffer);
+          }
+        }
+      }
 #endif
       // Check Memory capacity and extensions
       bool gl_sharing = false, version = false, d3d11_sharing = false, memory = false;
@@ -1120,7 +1082,9 @@ namespace OVR
       pclEnqueueAcquireD3D11ObjectsNV = GETFUNCTION(_platformId, clEnqueueAcquireD3D11ObjectsNV);
       pclEnqueueReleaseD3D11ObjectsNV = GETFUNCTION(_platformId, clEnqueueReleaseD3D11ObjectsNV);
       if (pclCreateFromD3D11Texture2DNV != NULL)
-      { return true; }
+      {
+        return true;
+      }
     }
     else if (strstr(_deviceExtensions, "cl_khr_d3d11_sharing"))
     {
@@ -1132,7 +1096,9 @@ namespace OVR
       pclEnqueueAcquireD3D11ObjectsKHR = GETFUNCTION(_platformId, clEnqueueAcquireD3D11ObjectsKHR);
       pclEnqueueReleaseD3D11ObjectsKHR = GETFUNCTION(_platformId, clEnqueueReleaseD3D11ObjectsKHR);
       if (pclCreateFromD3D11Texture2DKHR != NULL)
-      { return true; }
+      {
+        return true;
+      }
     }
     return _sharing == NONE;
 #else
@@ -1451,7 +1417,9 @@ namespace OVR
   {
     int previous = _skinThreshold;
     if (threshold < 256)
-    { _skinThreshold = threshold; }
+    {
+      _skinThreshold = threshold;
+    }
     return previous;
   }
 
@@ -1667,7 +1635,7 @@ namespace OVR
     _histgram[1]->setTo(Scalar(0));
   }
 
-  // Enamerate colors in HS space
+  // Enumerate colors in HS space
   bool OvrvisionProOpenCL::EnumHS(Mat& result_l, Mat& result_r)
   {
     bool detect = false;
@@ -1692,8 +1660,8 @@ namespace OVR
       std::vector<std::vector<Point> > contours;
 
       split(HSV[eye], separate[eye]);
-      threshold(separate[eye][0], bilevel[eye], 30, 255, CV_THRESH_BINARY_INV); // Red part
-      threshold(separate[eye][1], work[eye], 80, 255, CV_THRESH_BINARY);    // High saturation part
+      threshold(separate[eye][0], bilevel[eye], 30, 255, cv::THRESH_BINARY_INV); // Red part
+      threshold(separate[eye][1], work[eye], 80, 255, cv::THRESH_BINARY);    // High saturation part
       multiply(bilevel[eye], work[eye], bilevel[eye]);
       Canny(bilevel[eye], bilevel[eye], 60, 200);
       findContours(bilevel[eye], contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE);
@@ -1892,10 +1860,10 @@ namespace OVR
         }
 
         sprintf(buffer, COUNTDOWN_MESSAGE, _frameCounter);
-        putText(_left, buffer, Point(0, height - 5), CV_FONT_HERSHEY_TRIPLEX, 0.7, Scalar(0, 0, 255), 1, CV_AA);
-        putText(_right, buffer, Point(0, height - 5), CV_FONT_HERSHEY_TRIPLEX, 0.7, Scalar(0, 0, 255), 1, CV_AA);
-        putText(_left, ESTIMATION_INSTRUCTION, Point(10, height / 2), CV_FONT_HERSHEY_TRIPLEX, 0.7, Scalar(0, 0, 255), 1, CV_AA);
-        putText(_right, ESTIMATION_INSTRUCTION, Point(10, height / 2), CV_FONT_HERSHEY_TRIPLEX, 0.7, Scalar(0, 0, 255), 1, CV_AA);
+        putText(_left, buffer, Point(0, height - 5), cv::FONT_HERSHEY_TRIPLEX, 0.7, Scalar(0, 0, 255), 1, cv::LINE_AA);
+        putText(_right, buffer, Point(0, height - 5), cv::FONT_HERSHEY_TRIPLEX, 0.7, Scalar(0, 0, 255), 1, cv::LINE_AA);
+        putText(_left, ESTIMATION_INSTRUCTION, Point(10, height / 2), cv::FONT_HERSHEY_TRIPLEX, 0.7, Scalar(0, 0, 255), 1, cv::LINE_AA);
+        putText(_right, ESTIMATION_INSTRUCTION, Point(10, height / 2), cv::FONT_HERSHEY_TRIPLEX, 0.7, Scalar(0, 0, 255), 1, cv::LINE_AA);
 
         if (_frameCounter == 0)
         {
@@ -1908,8 +1876,8 @@ namespace OVR
       {
         _frameCounter--;
         sprintf(buffer, "H:%d - %d S:%d - %d", _h_low, _h_high, _s_low, _s_high);
-        putText(_left, buffer, Point(0, height - 5), CV_FONT_HERSHEY_TRIPLEX, 1, Scalar(0, 0, 255));
-        putText(_right, ESTIMATED_MESSAGE, Point(0, height - 5), CV_FONT_HERSHEY_TRIPLEX, 1, Scalar(0, 0, 255));
+        putText(_left, buffer, Point(0, height - 5), cv::FONT_HERSHEY_TRIPLEX, 1, Scalar(0, 0, 255));
+        putText(_right, ESTIMATED_MESSAGE, Point(0, height - 5), cv::FONT_HERSHEY_TRIPLEX, 1, Scalar(0, 0, 255));
       }
       return false;
     }
