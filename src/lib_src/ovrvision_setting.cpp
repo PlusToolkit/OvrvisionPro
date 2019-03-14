@@ -44,7 +44,7 @@ namespace OVR
     m_propWhiteBalanceB = 1536; // WhitebalanceB
     m_propWhiteBalanceAuto = 1; // WhitebalanceAuto
 
-    m_pixelSize = cv::Size(1280.0, 960.0);
+    m_pixelSize = cv::Size(1280, 960);
     m_leftCameraInstric = (cv::Mat_<double>(3, 3) << 6.7970157255511901e+002, 0., 6.0536133655058381e+002, 0., 6.8042527485960966e+002, 5.5465392353996174e+002, 0., 0., 1.);
     m_rightCameraInstric = (cv::Mat_<double>(3, 3) << 6.8865122458251960e+002, 0., 6.1472005979575772e+002, 0., 6.8933034565503726e+002, 5.0684212440916116e+002, 0., 0., 1.);
     m_leftCameraDistortion = (cv::Mat_<double>(1, 8) << -4.1335867833577783e-001, 2.1178505767332989e-001, -4.7504756919241204e-004, 3.2255999104604089e-003, 3.7887562626108255e-002, -9.2038953879423846e-002, 3.1299065818407031e-002, 1.3086219827422665e-001);
@@ -174,29 +174,27 @@ namespace OVR
       int mode = 0;
 
       // get data node
-      cv::FileNode data(cvfs.fs, NULL);
-
-      mode = data["Mode"];
+      mode = cvfs["Mode"];
 
       // read camera setting
-      m_propExposure = data["Exposure"];
-      m_propGain = data["Gain"];
-      m_propBLC = data["BLC"];
-      m_propWhiteBalanceR = data["WhiteBalanceR"];
-      m_propWhiteBalanceG = data["WhiteBalanceG"];
-      m_propWhiteBalanceB = data["WhiteBalanceB"];
+      m_propExposure = cvfs["Exposure"];
+      m_propGain = cvfs["Gain"];
+      m_propBLC = cvfs["BLC"];
+      m_propWhiteBalanceR = cvfs["WhiteBalanceR"];
+      m_propWhiteBalanceG = cvfs["WhiteBalanceG"];
+      m_propWhiteBalanceB = cvfs["WhiteBalanceB"];
 
-      m_propWhiteBalanceAuto = (char)((int)data["WhiteBalanceAuto"] & 0x00000001);
+      m_propWhiteBalanceAuto = (char)((int)cvfs["WhiteBalanceAuto"] & 0x00000001);
 
       // read undistort param
-      data["LeftCameraInstric"] >> m_leftCameraInstric;
-      data["RightCameraInstric"] >> m_rightCameraInstric;
-      data["LeftCameraDistortion"] >> m_leftCameraDistortion;
-      data["RightCameraDistortion"] >> m_rightCameraDistortion;
-      data["R1"] >> m_R1;
-      data["R2"] >> m_R2;
-      data["T"] >> m_trans;
-      data["FocalPoint"] >> m_focalPoint;
+      cvfs["LeftCameraInstric"] >> m_leftCameraInstric;
+      cvfs["RightCameraInstric"] >> m_rightCameraInstric;
+      cvfs["LeftCameraDistortion"] >> m_leftCameraDistortion;
+      cvfs["RightCameraDistortion"] >> m_rightCameraDistortion;
+      cvfs["R1"] >> m_R1;
+      cvfs["R2"] >> m_R2;
+      cvfs["T"] >> m_trans;
+      cvfs["FocalPoint"] >> m_focalPoint;
 
       cvfs.release();
 
